@@ -43,7 +43,7 @@ public class UserController {
 
             User newUser =Factory.createUser("Customer");
             newUser.setUsername(registerDTO.getUsername());
-            newUser.setPassword(registerDTO.getPassword());
+            newUser.setPassword(userService.hashPassword(registerDTO.getPassword()));
 
             ((Customer) newUser).setPhone(registerDTO.getPhone());
 
