@@ -1,6 +1,7 @@
 package com.example.sd_assignment_2.business.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="food")
@@ -32,6 +33,13 @@ public class Food {
         this.category = category;
         this.restaurant = restaurant;
     }
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="order_food",
+            joinColumns = @JoinColumn(name="food_id"),
+            inverseJoinColumns = @JoinColumn(name="order_id")
+    )
+    private List<Order2> orders_it_appears_in;
 
     public Food() {
         super();
@@ -84,4 +92,16 @@ public class Food {
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
     }
+
+    public void addOrder(Order2 order){
+        this.orders_it_appears_in.add(order);
+    }
+
+//    public List<Order> getOrders_it_appears_in() {
+//        return orders_it_appears_in;
+//    }
+//
+//    public void setOrders_it_appears_in(List<Order> orders_it_appears_in) {
+//        this.orders_it_appears_in = orders_it_appears_in;
+//    }
 }

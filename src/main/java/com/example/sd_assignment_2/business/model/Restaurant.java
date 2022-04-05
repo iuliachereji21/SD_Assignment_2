@@ -26,6 +26,9 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant")
     private List<Food> foods;
 
+    @OneToMany(mappedBy = "restaurant")
+    private List<Order2> orders;
+
     public Restaurant(String name, String location, String available_delivery_zones, Admin admin) {
         this.name = name;
         this.location = location;
@@ -76,5 +79,23 @@ public class Restaurant {
     public void setAdmin(Admin admin) {
         this.admin = admin;
     }
+
+    public List<Food> getFoods() {
+        return foods;
+    }
+
+    public void setFoods(List<Food> foods) {
+        this.foods = foods;
+    }
+
+    public List<Order2> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order2> orders) {
+        this.orders = orders;
+    }
+
+
 }
 

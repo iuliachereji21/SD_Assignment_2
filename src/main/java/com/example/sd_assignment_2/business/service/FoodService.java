@@ -20,4 +20,8 @@ public class FoodService {
     public ArrayList<Food> getFoodsByRestaurantId(Long id){
         return foodRepository.getAllByRestaurant_Id(id);
     }
+
+    public Food findById(Long id){
+        return foodRepository.findOne(id);
+    }
 }
