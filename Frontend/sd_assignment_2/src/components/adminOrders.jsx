@@ -8,6 +8,7 @@ function AdminOrders() {
     adminId= adminId.slice(1);
     const [data, setData] = useState([]);
     const [updated, setUpdated] = useState(0);
+    const [filteredData, setFilteredData] = useState([]);
 
     useEffect(()=>{
         axios.get(`http://localhost:8080/sd_assignment2/admin/${adminId}/orders`)
@@ -30,6 +31,7 @@ function AdminOrders() {
                     }
                 });
                 setData(data);
+                setFilteredData(data);
                 console.log(data);
             })
             .catch(err =>{
@@ -52,9 +54,28 @@ function AdminOrders() {
             })
     };
 
+    function filterData(){
+        var e = document.getElementById("selectInput");
+        //var as = document.forms[0].ddlViewBy.value;
+        var status = e.options[e.selectedIndex].value;
+        if(status=="None"){
+            setFilteredData(data);
+        }
+        else setFilteredData(data.filter(obj => obj.status == status));
+    }
+
     return (
         <div>
             <h1>Admin orders {adminId}</h1>
+            <label>Status</label>
+                <select name="status" onChange={filterData} id ="selectInput">
+                    <option value="None"></option>
+                    <option value="PENDING">PENDING</option>
+                    <option value="ACCEPTED">ACCEPTED</option>
+                    <option value="IN DELIVERY">IN DELIVERY</option>
+                    <option value="DELIVERED">DELIVERED</option>
+                    <option value="DECLINED">DECLINED</option>
+                </select>
             <table>
                 <thead>
                     <tr>
@@ -65,7 +86,7 @@ function AdminOrders() {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((order)=>(
+                    {filteredData.map((order)=>(
                         <tr>
                             <td>{order.id}</td>
                             <td>{order.customer_name}</td>

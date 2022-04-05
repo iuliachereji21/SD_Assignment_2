@@ -13,5 +13,7 @@ public interface OrderRepository extends JpaRepository<Order2, Long> {
     @Query("select o from Order2 o where o.restaurant.admin.id=?1")
     List<Order2> getOrdersByAdminId(Long id);
 
+    List<Order2> getByCustomer_Id(Long id);
+
     Order2 getById(Long id);
 }

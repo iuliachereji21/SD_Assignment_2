@@ -7,20 +7,34 @@ function CustomerRestaurants() {
     customerId= customerId.slice(1);
 
     const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
 
     useEffect(()=>{
         axios.get(`http://localhost:8080/sd_assignment2/customer/${customerId}/restaurants`)
             .then(res =>{
                 setData(res.data);
+                setFilteredData(res.data);
             })
             .catch(err =>{
                 console.log(err);
             })
-    },[])
+    },[]);
+
+    function filterData(){
+        var e = document.getElementById("searchInput");
+        //var as = document.forms[0].ddlViewBy.value;
+        var text = e.value;
+        if(text==""){
+            setFilteredData(data);
+        }
+        else setFilteredData(data.filter(obj => obj.name.toLowerCase().includes(text.toLowerCase())));
+    }
 
     return (
         <div>
             <h1>Customer restaurants {customerId}</h1>
+            <input type="text" id="searchInput"></input>
+            <button onClick={filterData}>Search by name</button>
             <table>
                 <thead>
                     <tr>
@@ -31,7 +45,7 @@ function CustomerRestaurants() {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((restaurant)=>(
+                    {filteredData.map((restaurant)=>(
                         <tr>
                             <td>{restaurant.id}</td>
                             <td>{restaurant.name}</td>

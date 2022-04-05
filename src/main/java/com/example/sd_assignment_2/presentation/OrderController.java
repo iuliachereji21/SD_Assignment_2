@@ -59,9 +59,22 @@ public class OrderController {
     }
 
     @GetMapping("/admin/{id}/orders")
-    public ResponseEntity getOrderssByAdminId(@PathVariable Long id){
+    public ResponseEntity getOrdersByAdminId(@PathVariable Long id){
 
         ArrayList<Order2> ordersList = new ArrayList<>(orderService.getOrdersByAdminId(id));
+        ArrayList<OrderDTOWithId> orders = new ArrayList<>();
+        for(int i=0;i<ordersList.size();i++){
+            orders.add(new OrderDTOWithId(ordersList.get(i)));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(orders);
+    }
+
+    @GetMapping("/customer/{id}/orders")
+    public ResponseEntity getOrdersByCustomerId(@PathVariable Long id){
+
+        ArrayList<Order2> ordersList = new ArrayList<>(orderService.getOrdersByCustomerId(id));
         ArrayList<OrderDTOWithId> orders = new ArrayList<>();
         for(int i=0;i<ordersList.size();i++){
             orders.add(new OrderDTOWithId(ordersList.get(i)));
