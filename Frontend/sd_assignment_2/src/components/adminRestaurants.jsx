@@ -7,6 +7,8 @@ import AdminRestaurantsTable from './adminRestaurantsTable';
 function AdminRestaurants() {
     let {adminId} = useParams();
     adminId= adminId.slice(1);
+    let {token} = useParams();
+    token=token.slice(1);
 
     const [isAddRestaurantDialogOpen, setIsAddRestaurantDialogOpen]= useState(false);
     const [data, setData] = useState([]);
@@ -62,7 +64,7 @@ function AdminRestaurants() {
                             <td>{restaurant.location}</td>
                             <td>{restaurant.available_delivery_zones}</td>
                             <td>
-                                <Link to={"/admin/:"+adminId+"/restaurants/:"+restaurant.id}>View Menu</Link>
+                                <Link to={"/admin/:"+adminId+"/:"+token+"/restaurants/:"+restaurant.id}>View Menu</Link>
                             </td>
                         </tr>
                     ))}

@@ -27,12 +27,12 @@ class App extends Component {
           <Routes>
             <Route path='/login' element={<LogIn/>}></Route> 
             <Route path='/register' element={<Register />}></Route>
-            <Route path='/customer/:customerId' element={<CustomerPage/>}>
+            <Route path='/customer/:customerId/:token' element={<CustomerPage/>}>
               <Route path='restaurants/:restaurantId' element={<CustomerRestaurantPage/>}></Route> 
               <Route path='restaurants' element={<CustomerRestaurants/>}></Route> 
               <Route path='orders' element={<CustomerOrders/>}></Route> 
             </Route> 
-            <Route path='/admin/:adminId' exact element={<AdminPage/>}>
+            <Route path='/admin/:adminId/:token' exact element={<AdminPage/>}>
               <Route path='restaurants/:restaurantId' element={<AdminRestaurantPage/>}></Route> 
               <Route path='restaurants' element={<AdminRestaurants/>}></Route> 
               <Route path='orders' element={<AdminOrders/>}></Route> 

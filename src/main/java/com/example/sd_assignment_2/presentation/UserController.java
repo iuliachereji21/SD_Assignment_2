@@ -5,6 +5,7 @@ import com.example.sd_assignment_2.business.model.Customer;
 import com.example.sd_assignment_2.business.model.Factory;
 import com.example.sd_assignment_2.business.model.User;
 import com.example.sd_assignment_2.business.service.UserService;
+import com.example.sd_assignment_2.security.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,10 +48,12 @@ public class UserController {
 
             ((Customer) newUser).setPhone(registerDTO.getPhone());
 
+            String token = JwtToken.getJwtoken(newUser);
+
             try{
                 userService.addUser(newUser);
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(new UserDTO(newUser.getId(),true));
+                        .body(new UserDTO(newUser.getId(),true,token));
             }
             catch (Exception e){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -70,13 +73,16 @@ public class UserController {
 
         try{
             User user = userService.logIn(logInDTO.getUsername(), logInDTO.getPassword());
+            String token = JwtToken.getJwtoken(user);
+            System.out.println(token);
+
             if(user instanceof Customer){
                 return ResponseEntity.status(HttpStatus.OK)
-                           .body(new UserDTO(user.getId(), true));
+                           .body(new UserDTO(user.getId(), true,token));
             }
             else
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(new UserDTO(user.getId(), false));
+                        .body(new UserDTO(user.getId(), false,token));
 
 
         }

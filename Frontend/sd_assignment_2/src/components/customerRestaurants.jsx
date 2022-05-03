@@ -5,6 +5,8 @@ import axios from 'axios'
 function CustomerRestaurants() {
     let {customerId} = useParams();
     customerId= customerId.slice(1);
+    let {token} = useParams();
+    token=token.slice(1);
 
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
@@ -52,7 +54,7 @@ function CustomerRestaurants() {
                             <td>{restaurant.location}</td>
                             <td>{restaurant.available_delivery_zones}</td>
                             <td>
-                                <Link to={"/customer/:"+customerId+"/restaurants/:"+restaurant.id}>View Menu</Link>
+                                <Link to={"/customer/:"+customerId+"/:"+token+"/restaurants/:"+restaurant.id}>View Menu</Link>
                             </td>
                         </tr>
                     ))}

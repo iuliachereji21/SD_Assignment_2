@@ -13,9 +13,9 @@ function LogIn(){
         axios.post("http://localhost:8080/sd_assignment2/login",{username: uname.value, password: pass.value})
         .then(response =>{
             if(response.data.customer)
-                navigate(`/customer/:${response.data.userId}`);
+                navigate(`/customer/:${response.data.userId}/:${response.data.token}`);
             else
-                navigate(`/admin/:${response.data.userId}`);
+                navigate(`/admin/:${response.data.userId}/:${response.data.token}`);
             
         })
         .catch(({ response }) => { 

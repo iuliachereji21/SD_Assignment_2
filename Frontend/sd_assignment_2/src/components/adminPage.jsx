@@ -9,15 +9,17 @@ import AdminOrders from './adminOrders';
 function AdminPage() {
     let {adminId} = useParams();
     adminId= adminId.slice(1);
+    let {token} = useParams();
+    token= token.slice(1);
     return (
         <div>
             <NavBarLogOut/>
             <h1>Admin page {adminId}</h1>
             
             <div>
-                <Link to={"/admin/:"+adminId+"/restaurants"}>Restaurants</Link>
+                <Link to={"/admin/:"+adminId+"/:"+token+"/restaurants"}>Restaurants</Link>
                 
-                <Link to={"/admin/:"+adminId+"/orders"}>Orders</Link>
+                <Link to={"/admin/:"+adminId+"/:"+token+"/orders"}>Orders</Link>
             </div>
             <Outlet/>
 
