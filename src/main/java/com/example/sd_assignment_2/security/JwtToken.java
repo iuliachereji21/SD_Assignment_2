@@ -22,8 +22,8 @@ public class JwtToken {
     }
 
     public static User getUser(String token){
-        String payload = token.split("\\.")[1];
         try{
+            String payload = token.split("\\.")[1];
             String json = new String(Base64.decodeBase64(payload),"UTF-8");
             JSONObject obj = new JSONObject(json);
             String password = obj.getString("password");

@@ -8,7 +8,7 @@ function AddFoodDialog(props) {
         // Prevent page reload
         event.preventDefault();
         var { name, description, price, category} = document.forms[0];
-        axios.post(`http://localhost:8080/sd_assignment2/admin/${props.adminId}/restaurants`,{name: name.value, description: description.value, price: price.value, category: category.value, restaurant_id: props.restaurantId})
+        axios.post(`http://localhost:8080/sd_assignment2/admin/${props.adminId}/${props.token}/restaurants`,{name: name.value, description: description.value, price: price.value, category: category.value, restaurant_id: props.restaurantId})
         .then(response =>{
             console.log(response);
             props.onSave({id:response.data.id, name: response.data.name, description: response.data.description, price: response.data.price, category: response.data.category});

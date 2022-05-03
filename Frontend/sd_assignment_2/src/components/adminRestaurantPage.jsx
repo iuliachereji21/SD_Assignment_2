@@ -8,13 +8,15 @@ function AdminRestaurantPage() {
     restaurantId= restaurantId.slice(1);
     let {adminId} = useParams();
     adminId= adminId.slice(1);
+    let {token} = useParams();
+    token=token.slice(1);
 
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [isAddFoodDialogOpen, setIsAddFoodDialogOpen]= useState(false);
 
     useEffect(()=>{
-        axios.get(`http://localhost:8080/sd_assignment2/admin/${adminId}/restaurants/${restaurantId}`)
+        axios.get(`http://localhost:8080/sd_assignment2/admin/${adminId}/${token}/restaurants/${restaurantId}`)
             .then(res =>{
                 console.log(res);
                 setData(res.data);
@@ -53,6 +55,7 @@ function AdminRestaurantPage() {
             <button onClick={()=>{setIsAddFoodDialogOpen(true)}}>Add</button>
             <AddFoodDialog 
                 restaurantId = {restaurantId}
+                token = {token}
                 adminId = {adminId}
                 isvisible = {isAddFoodDialogOpen} 
                 onSave = {(obj)=>{

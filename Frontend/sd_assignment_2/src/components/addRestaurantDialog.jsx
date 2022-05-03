@@ -11,7 +11,7 @@ function AddRestaurantDialog(props) {
         event.preventDefault();
         var { name, location, av_del_zones} = document.forms[0];
         console.log(name.value);
-        axios.post("http://localhost:8080/sd_assignment2/admin",{name: name.value, location: location.value, available_delivery_zones: av_del_zones.value, admin_id: props.adminId})
+        axios.post(`http://localhost:8080/sd_assignment2/admin/${props.token}`,{name: name.value, location: location.value, available_delivery_zones: av_del_zones.value, admin_id: props.adminId})
         .then(response =>{
             console.log(response);
             props.onSave({id:response.data.id, name: response.data.name, location: response.data.location, available_delivery_zones: response.data.available_delivery_zones});

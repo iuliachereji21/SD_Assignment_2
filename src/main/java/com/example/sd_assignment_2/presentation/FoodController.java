@@ -5,8 +5,10 @@ import com.example.sd_assignment_2.business.DTOs.FoodDTOWithId;
 import com.example.sd_assignment_2.business.DTOs.ResponseDTO;
 import com.example.sd_assignment_2.business.model.Food;
 import com.example.sd_assignment_2.business.model.Restaurant;
+import com.example.sd_assignment_2.business.model.User;
 import com.example.sd_assignment_2.business.service.FoodService;
 import com.example.sd_assignment_2.business.service.RestaurantService;
+import com.example.sd_assignment_2.security.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +25,15 @@ public class FoodController {
     @Autowired
     private RestaurantService restaurantService;
 
-    @GetMapping("/admin/{id}/restaurants/{id_restaurant}")
-    public ResponseEntity getFoodsByRestaurantId(@PathVariable Long id_restaurant){
+    @GetMapping("/admin/{id}/{token}/restaurants/{id_restaurant}")
+    public ResponseEntity getFoodsByRestaurantId(@PathVariable Long id, @PathVariable Long id_restaurant, @PathVariable String token){
+        User user = JwtToken.getUser(token);
+        if(user == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
+        if(user.getId()!=id)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
 
         ArrayList<Food> foodsList = foodService.getFoodsByRestaurantId(id_restaurant);
         ArrayList<FoodDTOWithId> foods = new ArrayList<>();
@@ -36,8 +45,15 @@ public class FoodController {
                 .body(foods);
     }
 
-    @PostMapping( "/admin/{id}/restaurants")
-    public ResponseEntity addFood(@RequestBody FoodDTO foodDTO){
+    @PostMapping( "/admin/{id}/{token}/restaurants")
+    public ResponseEntity addFood(@RequestBody FoodDTO foodDTO, @PathVariable Long id, @PathVariable String token){
+        User user = JwtToken.getUser(token);
+        if(user == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
+        if(user.getId()!=id)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
 
         if(foodDTO.getName()==null || foodDTO.getName().equals(""))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

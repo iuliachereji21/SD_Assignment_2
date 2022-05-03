@@ -6,12 +6,14 @@ import Select from 'react-select';
 function AdminOrders() {
     let {adminId} = useParams();
     adminId= adminId.slice(1);
+    let {token} = useParams();
+    token=token.slice(1);
     const [data, setData] = useState([]);
     const [updated, setUpdated] = useState(0);
     const [filteredData, setFilteredData] = useState([]);
 
     useEffect(()=>{
-        axios.get(`http://localhost:8080/sd_assignment2/admin/${adminId}/orders`)
+        axios.get(`http://localhost:8080/sd_assignment2/admin/${adminId}/${token}/orders`)
             .then(res =>{
                 var data = res.data;
                 data.map((order)=>{
@@ -42,7 +44,7 @@ function AdminOrders() {
     const updateStatus = (selected, order)=>{
         console.log(order);
         console.log(selected);
-        axios.patch(`http://localhost:8080/sd_assignment2/admin/${adminId}/orders/${order.id}`,{status: selected.value})
+        axios.patch(`http://localhost:8080/sd_assignment2/admin/${adminId}/${token}/orders/${order.id}`,{status: selected.value})
             .then(res=>{
                 console.log(res);
                 var up = updated;

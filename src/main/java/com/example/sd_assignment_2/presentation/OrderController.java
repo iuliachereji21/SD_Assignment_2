@@ -6,6 +6,7 @@ import com.example.sd_assignment_2.business.service.FoodService;
 import com.example.sd_assignment_2.business.service.OrderService;
 import com.example.sd_assignment_2.business.service.RestaurantService;
 import com.example.sd_assignment_2.business.service.UserService;
+import com.example.sd_assignment_2.security.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,8 +59,15 @@ public class OrderController {
                 .body(null);
     }
 
-    @GetMapping("/admin/{id}/orders")
-    public ResponseEntity getOrdersByAdminId(@PathVariable Long id){
+    @GetMapping("/admin/{id}/{token}/orders")
+    public ResponseEntity getOrdersByAdminId(@PathVariable Long id, @PathVariable String token){
+        User user = JwtToken.getUser(token);
+        if(user == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
+        if(user.getId()!=id)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
 
         ArrayList<Order2> ordersList = new ArrayList<>(orderService.getOrdersByAdminId(id));
         ArrayList<OrderDTOWithId> orders = new ArrayList<>();
@@ -84,8 +92,16 @@ public class OrderController {
                 .body(orders);
     }
 
-    @PatchMapping("/admin/{id}/orders/{orderId}")
-    public ResponseEntity updateOrderStatus(@PathVariable Long orderId, @RequestBody OrderDTOWithId order){
+    @PatchMapping("/admin/{id}/{token}/orders/{orderId}")
+    public ResponseEntity updateOrderStatus(@PathVariable Long id, @PathVariable Long orderId, @RequestBody OrderDTOWithId order, @PathVariable String token){
+        User user = JwtToken.getUser(token);
+        if(user == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
+        if(user.getId()!=id)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
+
         Order2 myOrder = orderService.getById(orderId);
         if(myOrder!=null){
             myOrder.setStatus(order.getStatus());

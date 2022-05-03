@@ -8,6 +8,7 @@ import com.example.sd_assignment_2.business.model.Restaurant;
 import com.example.sd_assignment_2.business.model.User;
 import com.example.sd_assignment_2.business.service.RestaurantService;
 import com.example.sd_assignment_2.business.service.UserService;
+import com.example.sd_assignment_2.security.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +24,17 @@ public class RestaurantController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/admin/{id}/restaurants")
-    public ResponseEntity getRestaurantsByAdminId(@PathVariable Long id){
+    @GetMapping("/admin/{id}/{token}/restaurants")
+    public ResponseEntity getRestaurantsByAdminId(@PathVariable Long id, @PathVariable String token){
+        User user = JwtToken.getUser(token);
+        if(user == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
+        if(user.getId()!=id)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
 
-        ArrayList<Restaurant> restaurantsList = restaurantService.getRestaurantsByAdminId(id);
+        ArrayList<Restaurant> restaurantsList = restaurantService.getRestaurantsByAdminId(user.getId());
         ArrayList<RestaurantDTOWithId> restaurants = new ArrayList<>();
         for(int i=0;i<restaurantsList.size();i++){
             restaurants.add(new RestaurantDTOWithId(restaurantsList.get(i)));
@@ -49,8 +57,16 @@ public class RestaurantController {
                 .body(restaurants);
     }
 
-    @PostMapping( "/admin")
-    public ResponseEntity addRestaurant(@RequestBody RestaurantDTO restaurantDTO){
+    @PostMapping( "/admin/{token}")
+    public ResponseEntity addRestaurant(@RequestBody RestaurantDTO restaurantDTO, @PathVariable String token){
+        User user = JwtToken.getUser(token);
+        if(user == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
+        if(user.getId()!=restaurantDTO.getAdmin_id())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ResponseDTO("unauthorized"));
+
         if(restaurantDTO.getName()==null || restaurantDTO.getName().equals(""))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseDTO("name required"));

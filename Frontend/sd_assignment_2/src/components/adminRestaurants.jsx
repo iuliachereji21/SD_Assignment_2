@@ -15,7 +15,7 @@ function AdminRestaurants() {
 
     useEffect(()=>{
         console.log("use Effect");
-        axios.get(`http://localhost:8080/sd_assignment2/admin/${adminId}/restaurants`)
+        axios.get(`http://localhost:8080/sd_assignment2/admin/${adminId}/${token}/restaurants`)
             .then(res =>{
                 setData(res.data);
             })
@@ -32,6 +32,7 @@ function AdminRestaurants() {
             <button onClick={()=>{setIsAddRestaurantDialogOpen(true)}}>Add</button>
             <AddRestaurantDialog 
                 adminId = {adminId}
+                token = {token}
                 isvisible = {isAddRestaurantDialogOpen} 
                 onSave = {(obj)=>{
                     console.log(obj);
