@@ -16,6 +16,7 @@ import CustomerRestaurants from './components/customerRestaurants';
 import CustomerOrders from './components/customerOrders';
 import AdminRestaurantPage from './components/adminRestaurantPage';
 import CustomerRestaurantPage from './components/customerRestaurantPage';
+import UnauthorizedErrorPage from './components/unauthorizedErrorPage';
 
 
 class App extends Component {
@@ -26,6 +27,7 @@ class App extends Component {
         <div className='content'>
           <Routes>
             <Route path='/login' element={<LogIn/>}></Route> 
+            <Route path='/unauthorized' element={<UnauthorizedErrorPage/>}></Route> 
             <Route path='/register' element={<Register />}></Route>
             <Route path='/customer/:customerId/:token' element={<CustomerPage/>}>
               <Route path='restaurants/:restaurantId' element={<CustomerRestaurantPage/>}></Route> 

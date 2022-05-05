@@ -1,7 +1,10 @@
 import React, { Component, useState } from 'react';
 import axios from 'axios'
 
+import {useNavigate} from 'react-router-dom';
+
 function AddFoodDialog(props) {
+    let navigate = useNavigate();
     const [errorMessage, setMessage]= useState("");
 
     let handleSubmit = (event) => {
@@ -15,6 +18,8 @@ function AddFoodDialog(props) {
         })
         .catch(({ response }) => { 
             setMessage(response.data.message);
+            if(response.data.message == "Request failed with status code 401")
+                    navigate(`/unauthorized`);
         })
         
     };

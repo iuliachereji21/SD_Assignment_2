@@ -15,7 +15,7 @@ function Register() {
         .then(response =>{
             console.log(response);
             if(response.data.userId)
-                navigate(`/customer/:${response.data.userId}`);
+                navigate(`/customer/:${response.data.userId}/:${response.data.token}`);
             //this.setState({errorMessage : response.data.message})
         })
         .catch(({ response }) => { 

@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 public class OrderController {
@@ -30,8 +29,16 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping( "/customer/{idCustomer}/restaurants/{idRestaurant}")
-    public ResponseEntity addOrder(@PathVariable Long idCustomer, @PathVariable Long idRestaurant, @RequestBody CartDTO cartDTO){
+    @PostMapping( "/customer/{idCustomer}/{token}/restaurants/{idRestaurant}")
+    public ResponseEntity addOrder(@PathVariable Long idCustomer, @PathVariable Long idRestaurant, @RequestBody CartDTO cartDTO, @PathVariable String token){
+        User myuser = JwtToken.getUser(token);
+        if(myuser == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
+        if(myuser.getId()!=idCustomer)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
+
         if(cartDTO.getCart().size()<=0)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseDTO("empty cart"));
@@ -79,8 +86,15 @@ public class OrderController {
                 .body(orders);
     }
 
-    @GetMapping("/customer/{id}/orders")
-    public ResponseEntity getOrdersByCustomerId(@PathVariable Long id){
+    @GetMapping("/customer/{id}/{token}/orders")
+    public ResponseEntity getOrdersByCustomerId(@PathVariable Long id, @PathVariable String token){
+        User user = JwtToken.getUser(token);
+        if(user == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
+        if(user.getId()!=id)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
 
         ArrayList<Order2> ordersList = new ArrayList<>(orderService.getOrdersByCustomerId(id));
         ArrayList<OrderDTOWithId> orders = new ArrayList<>();

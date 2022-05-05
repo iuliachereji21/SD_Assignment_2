@@ -44,9 +44,15 @@ public class RestaurantController {
                 .body(restaurants);
     }
 
-    @GetMapping("/customer/{id}/restaurants")
-    public ResponseEntity getAllRestaurants(){
-
+    @GetMapping("/customer/{id}/{token}/restaurants")
+    public ResponseEntity getAllRestaurants(@PathVariable Long id, @PathVariable String token){
+        User user = JwtToken.getUser(token);
+        if(user == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
+        if(user.getId()!=id)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO("unauthorized"));
         ArrayList<Restaurant> restaurantsList = restaurantService.getAllRestaurants();
         ArrayList<RestaurantDTOWithId> restaurants = new ArrayList<>();
         for(int i=0;i<restaurantsList.size();i++){

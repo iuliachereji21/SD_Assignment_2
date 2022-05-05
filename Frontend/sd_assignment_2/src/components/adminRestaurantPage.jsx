@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link} from 'react-router-dom';
+import { useParams, useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import AddFoodDialog from './addFoodDialog';
 
 function AdminRestaurantPage() {
+    let navigate = useNavigate();
     let {restaurantId} = useParams();
     restaurantId= restaurantId.slice(1);
     let {adminId} = useParams();
@@ -23,7 +24,9 @@ function AdminRestaurantPage() {
                 setFilteredData(res.data);
             })
             .catch(err =>{
-                console.log(err);
+                console.log(err.message);
+                if(err.message == "Request failed with status code 401")
+                    navigate(`/unauthorized`);
             })
     },[])
 

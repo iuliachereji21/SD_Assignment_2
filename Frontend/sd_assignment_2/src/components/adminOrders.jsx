@@ -2,8 +2,10 @@ import React, { useEffect, useState  } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
 import Select from 'react-select';
+import {useNavigate} from 'react-router-dom';
 
 function AdminOrders() {
+    let navigate = useNavigate();
     let {adminId} = useParams();
     adminId= adminId.slice(1);
     let {token} = useParams();
@@ -38,6 +40,8 @@ function AdminOrders() {
             })
             .catch(err =>{
                 console.log(err);
+                if(err.message == "Request failed with status code 401")
+                    navigate(`/unauthorized`);
             })
     },[updated]);
 
@@ -53,6 +57,8 @@ function AdminOrders() {
             })
             .catch(err =>{
                 console.log(err);
+                if(err.message == "Request failed with status code 401")
+                    navigate(`/unauthorized`);
             })
     };
 

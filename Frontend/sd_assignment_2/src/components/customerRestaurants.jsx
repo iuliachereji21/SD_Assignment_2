@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link} from 'react-router-dom';
 import axios from 'axios'
 
 function CustomerRestaurants() {
+    let navigate = useNavigate();
     let {customerId} = useParams();
     customerId= customerId.slice(1);
     let {token} = useParams();
@@ -12,13 +13,15 @@ function CustomerRestaurants() {
     const [filteredData, setFilteredData] = useState([]);
 
     useEffect(()=>{
-        axios.get(`http://localhost:8080/sd_assignment2/customer/${customerId}/restaurants`)
+        axios.get(`http://localhost:8080/sd_assignment2/customer/${customerId}/${token}/restaurants`)
             .then(res =>{
                 setData(res.data);
                 setFilteredData(res.data);
             })
             .catch(err =>{
                 console.log(err);
+                if(err.message == "Request failed with status code 401")
+                    navigate(`/unauthorized`);
             })
     },[]);
 

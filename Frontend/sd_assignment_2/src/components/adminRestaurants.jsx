@@ -5,6 +5,7 @@ import axios from 'axios'
 import AdminRestaurantsTable from './adminRestaurantsTable';
 
 function AdminRestaurants() {
+    let navigate = useNavigate();
     let {adminId} = useParams();
     adminId= adminId.slice(1);
     let {token} = useParams();
@@ -21,6 +22,8 @@ function AdminRestaurants() {
             })
             .catch(err =>{
                 console.log(err);
+                if(err.message == "Request failed with status code 401")
+                    navigate(`/unauthorized`);
             })
     },[])
 

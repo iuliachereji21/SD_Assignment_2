@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link} from 'react-router-dom';
 import axios from 'axios'
+import {useNavigate} from 'react-router-dom';
 
 function CustomerRestaurantPage() {
+    let navigate = useNavigate();
     let {restaurantId} = useParams();
     restaurantId= restaurantId.slice(1);
     let {customerId} = useParams();
     customerId= customerId.slice(1);
+    let {token} = useParams();
+    token=token.slice(1);
 
     const [data, setData] = useState([]);
     const [cart, setCart] = useState([]);
@@ -14,13 +18,15 @@ function CustomerRestaurantPage() {
     const [errorMessage, setMessage]= useState("");
 
     useEffect(()=>{
-        axios.get(`http://localhost:8080/sd_assignment2/admin/${customerId}/restaurants/${restaurantId}`)
+        axios.get(`http://localhost:8080/sd_assignment2/admin/${customerId}/${token}/restaurants/${restaurantId}`)
             .then(res =>{
                 console.log(res);
                 setData(res.data);
             })
             .catch(err =>{
                 console.log(err);
+                if(err.message == "Request failed with status code 401")
+                    navigate(`/unauthorized`);
             })
     },[])
 
@@ -33,7 +39,7 @@ function CustomerRestaurantPage() {
 
     const placeOrder = () =>{
         console.log(cart);
-        axios.post(`http://localhost:8080/sd_assignment2/customer/${customerId}/restaurants/${restaurantId}`,{cart: cart})
+        axios.post(`http://localhost:8080/sd_assignment2/customer/${customerId}/${token}/restaurants/${restaurantId}`,{cart: cart})
         .then(response =>{
             console.log(response);
             setMessage("");
@@ -43,6 +49,8 @@ function CustomerRestaurantPage() {
         .catch(({ response }) => { 
             console.log(response.data.message);
             setMessage(response.data.message);
+            if(response.data.message == "Request failed with status code 401")
+                navigate(`/unauthorized`);
         })
     };
 
