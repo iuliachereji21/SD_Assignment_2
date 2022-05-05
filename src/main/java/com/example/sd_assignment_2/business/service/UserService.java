@@ -22,6 +22,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Adds a user to the database if its username doesn't exist already
+     * @param user the user you want to add
+     * @throws Exception if the username already exists in the database
+     */
     public void addUser(User user) throws Exception{
         ArrayList<User> users = new ArrayList<>(userRepository.findByUsername(user.getUsername()));
         if(users.size()!=0){
@@ -30,9 +35,15 @@ public class UserService {
         else{
             userRepository.save(user);
         }
-
     }
 
+    /**
+     * Finds the user in the database whose credentials correspond to the given inputs
+     * @param username given username
+     * @param password given password
+     * @return the user which has the given credentials
+     * @throws Exception if no user was found
+     */
     public User logIn(String username, String password) throws Exception{
         String hashedPassword = hashPassword(password);
 
@@ -47,10 +58,20 @@ public class UserService {
         }
     }
 
+    /**
+     * Searches the database for the user with the given id
+     * @param id the id of the user
+     * @return the user with the given id
+     */
     public User findById(long id){
         return userRepository.findOne(id);
     }
 
+    /**
+     * Encodes the password using the SHA method
+     * @param password the password in plain text to be encoded
+     * @return the encoded password as a String
+     */
     public String hashPassword(String password){
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA");
