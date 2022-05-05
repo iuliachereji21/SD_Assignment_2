@@ -13,6 +13,10 @@ public class FoodService {
     @Autowired
     private FoodRepository foodRepository;
 
+    public void setFoodRepository(FoodRepository foodRepository) {
+        this.foodRepository = foodRepository;
+    }
+
     public void addFood(Food food){
         foodRepository.save(food);
     }

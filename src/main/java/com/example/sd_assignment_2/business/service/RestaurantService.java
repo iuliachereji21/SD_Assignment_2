@@ -13,6 +13,10 @@ public class RestaurantService {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
+    public void setRestaurantRepository(RestaurantRepository restaurantRepository) {
+        this.restaurantRepository = restaurantRepository;
+    }
+
     public void addRestaurant(Restaurant restaurant){
         restaurantRepository.save(restaurant);
     }

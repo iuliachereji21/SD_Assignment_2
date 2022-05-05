@@ -18,6 +18,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public void addUser(User user) throws Exception{
         ArrayList<User> users = new ArrayList<>(userRepository.findByUsername(user.getUsername()));
         if(users.size()!=0){
