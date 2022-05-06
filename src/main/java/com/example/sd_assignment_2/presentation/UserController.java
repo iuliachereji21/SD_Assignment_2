@@ -6,6 +6,8 @@ import com.example.sd_assignment_2.business.model.Factory;
 import com.example.sd_assignment_2.business.model.User;
 import com.example.sd_assignment_2.business.service.UserService;
 import com.example.sd_assignment_2.security.JwtToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    private Logger logger = LoggerFactory.getLogger(RestaurantController.class);
 
     @PostMapping( "/register")
     public ResponseEntity registerUser(@RequestBody RegisterDTO registerDTO){
@@ -49,9 +53,12 @@ public class UserController {
             ((Customer) newUser).setPhone(registerDTO.getPhone());
 
             String token = JwtToken.getJwtoken(newUser);
+            logger.debug("The token "+token+" was created for the new user with id "+newUser.getId());
 
             try{
                 userService.addUser(newUser);
+
+                logger.info("A new customer account with id "+newUser.getId() + " was created");
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(new UserDTO(newUser.getId(),true,token));
             }
@@ -74,15 +81,18 @@ public class UserController {
         try{
             User user = userService.logIn(logInDTO.getUsername(), logInDTO.getPassword());
             String token = JwtToken.getJwtoken(user);
-            System.out.println(token);
+            logger.debug("The token "+token+" was given at the log in to the user with id "+user.getId());
 
             if(user instanceof Customer){
+                logger.info("Customer with id "+user.getId()+" has logged in");
                 return ResponseEntity.status(HttpStatus.OK)
                            .body(new UserDTO(user.getId(), true,token));
             }
-            else
+            else{
+                logger.info("Admin with id "+user.getId()+" has logged in");
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(new UserDTO(user.getId(), false,token));
+            }
 
 
         }

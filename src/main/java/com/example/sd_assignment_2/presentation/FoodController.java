@@ -9,6 +9,8 @@ import com.example.sd_assignment_2.business.model.User;
 import com.example.sd_assignment_2.business.service.FoodService;
 import com.example.sd_assignment_2.business.service.RestaurantService;
 import com.example.sd_assignment_2.security.JwtToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,15 +27,22 @@ public class FoodController {
     @Autowired
     private RestaurantService restaurantService;
 
+    private Logger logger = LoggerFactory.getLogger(FoodController.class);
+
+
     @GetMapping("/admin/{id}/{token}/restaurants/{id_restaurant}")
     public ResponseEntity getFoodsByRestaurantId(@PathVariable Long id, @PathVariable Long id_restaurant, @PathVariable String token){
         User user = JwtToken.getUser(token);
-        if(user == null)
+        if(user == null){
+            logger.warn("An unauthorized access was atempted at endpoint: "+ "/admin/"+id+"/"+token+"/restaurants/"+id_restaurant);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ResponseDTO("unauthorized"));
-        if(user.getId()!=id)
+        }
+        if(user.getId()!=id){
+            logger.warn("An unauthorized access was atempted at endpoint: "+ "/admin/"+id+"/"+token+"/restaurants/"+id_restaurant);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ResponseDTO("unauthorized"));
+        }
 
         ArrayList<Food> foodsList = foodService.getFoodsByRestaurantId(id_restaurant);
         ArrayList<FoodDTOWithId> foods = new ArrayList<>();
@@ -48,13 +57,16 @@ public class FoodController {
     @PostMapping( "/admin/{id}/{token}/restaurants")
     public ResponseEntity addFood(@RequestBody FoodDTO foodDTO, @PathVariable Long id, @PathVariable String token){
         User user = JwtToken.getUser(token);
-        if(user == null)
+        if(user == null){
+            logger.warn("An unauthorized access was atempted at endpoint: "+ "/admin/"+id+"/"+token+"/restaurants/ to add food");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ResponseDTO("unauthorized"));
-        if(user.getId()!=id)
+        }
+        if(user.getId()!=id){
+            logger.warn("An unauthorized access was atempted at endpoint: "+ "/admin/"+id+"/"+token+"/restaurants/ to add food");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ResponseDTO("unauthorized"));
-
+                .body(new ResponseDTO("unauthorized"));
+        }
         if(foodDTO.getName()==null || foodDTO.getName().equals(""))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseDTO("name required"));

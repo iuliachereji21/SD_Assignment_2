@@ -2,6 +2,8 @@ package com.example.sd_assignment_2.business.service;
 
 import com.example.sd_assignment_2.business.model.Food;
 import com.example.sd_assignment_2.persistance.FoodRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ public class FoodService {
     @Autowired
     private FoodRepository foodRepository;
 
+    private Logger logger = LoggerFactory.getLogger(FoodService.class);
+
     public void setFoodRepository(FoodRepository foodRepository) {
         this.foodRepository = foodRepository;
     }
@@ -23,6 +27,9 @@ public class FoodService {
      */
     public void addFood(Food food){
         foodRepository.save(food);
+        logger.info("A new food with id "+food.getId()
+                +" was added to the restaurant with id "+food.getRestaurant().getId()
+                +" by the admin with id "+food.getRestaurant().getAdmin().getId());
     }
 
     /**

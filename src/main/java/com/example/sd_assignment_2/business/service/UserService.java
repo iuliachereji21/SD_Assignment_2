@@ -3,6 +3,8 @@ package com.example.sd_assignment_2.business.service;
 import com.example.sd_assignment_2.business.model.Admin;
 import com.example.sd_assignment_2.business.model.User;
 import com.example.sd_assignment_2.persistance.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    private Logger logger = LoggerFactory.getLogger(RestaurantService.class);
+
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -30,10 +34,13 @@ public class UserService {
     public void addUser(User user) throws Exception{
         ArrayList<User> users = new ArrayList<>(userRepository.findByUsername(user.getUsername()));
         if(users.size()!=0){
+            logger.debug("The username "+user.getUsername()
+                    +" belonging to an existing account was inserted to create a new account");
             throw new Exception("username already exists");
         }
         else{
             userRepository.save(user);
+            logger.info("A new customer account with id "+user.getId() + " was created");
         }
     }
 
@@ -49,12 +56,18 @@ public class UserService {
 
         ArrayList<User> users = new ArrayList<>(userRepository.findByUsernameAndPassword(username, hashedPassword));
         if(users.size()==0){
+            logger.debug("The username "+username +" was not found in the database for log in");
             throw new Exception("bad credentials");
         }
         else{
-            if(!users.get(0).getPassword().equals(hashedPassword))
+            if(!users.get(0).getPassword().equals(hashedPassword)){
+                logger.debug("The password introduced for user with id "+users.get(0).getId()+" is incorrect");
                 throw new Exception("bad credentials");
-            else return users.get(0);
+            }
+            else {
+                logger.info("User with id "+users.get(0).getId()+" has logged in");
+                return users.get(0);
+            }
         }
     }
 

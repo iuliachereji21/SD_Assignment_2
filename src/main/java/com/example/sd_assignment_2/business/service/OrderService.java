@@ -3,6 +3,8 @@ package com.example.sd_assignment_2.business.service;
 import com.example.sd_assignment_2.business.model.Order2;
 import com.example.sd_assignment_2.persistance.OrderRepository;
 import org.hibernate.criterion.Order;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    private Logger logger = LoggerFactory.getLogger(OrderService.class);
+
     public void setOrderRepository(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
@@ -24,6 +28,9 @@ public class OrderService {
      */
     public void addOrder(Order2 order){
         orderRepository.save(order);
+        logger.info("A new order with id "+order.getId()
+                +" was added to the restaurant with id "+order.getRestaurant().getId()
+                +" by the customer with id "+order.getCustomer().getId());
     }
 
     /**
@@ -50,6 +57,9 @@ public class OrderService {
      */
     public void updateOrder(Order2 order){
         orderRepository.save(order);
+        logger.info("The order with id "+order.getId()
+            +" was updated with the status "+order.getStatus()
+            +" by admin with id "+order.getRestaurant().getAdmin().getId());
     }
 
     /**
