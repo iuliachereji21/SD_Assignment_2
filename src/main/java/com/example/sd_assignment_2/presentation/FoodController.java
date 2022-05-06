@@ -9,13 +9,18 @@ import com.example.sd_assignment_2.business.model.User;
 import com.example.sd_assignment_2.business.service.FoodService;
 import com.example.sd_assignment_2.business.service.RestaurantService;
 import com.example.sd_assignment_2.security.JwtToken;
+import com.lowagie.text.Document;
+import com.lowagie.text.pdf.PdfWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @RestController
@@ -52,6 +57,26 @@ public class FoodController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(foods);
+    }
+
+    @GetMapping("/admin/{id}/{token}/restaurants/{id_restaurant}/pdf")
+    public void exportMenuToPdf(@PathVariable Long id, @PathVariable Long id_restaurant, @PathVariable String token, HttpServletResponse response){
+        User user = JwtToken.getUser(token);
+        if(user == null){
+            logger.warn("An unauthorized access was atempted at endpoint: "+ "/admin/"+id+"/"+token+"/restaurants/"+id_restaurant+"/pdf");
+            return;
+        }
+        if(user.getId()!=id){
+            logger.warn("An unauthorized access was atempted at endpoint: "+ "/admin/"+id+"/"+token+"/restaurants/"+id_restaurant+"/pdf");
+            return;
+        }
+
+        response.setContentType("application/pdf");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=Menu_"+id_restaurant+".pdf";
+        response.setHeader(headerKey,headerValue);
+        foodService.createPdfOfRestaurantMenu(id_restaurant, response);
+
     }
 
     @PostMapping( "/admin/{id}/{token}/restaurants")

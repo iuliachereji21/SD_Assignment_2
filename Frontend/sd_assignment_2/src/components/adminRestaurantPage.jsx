@@ -42,6 +42,21 @@ function AdminRestaurantPage() {
         console.log(category);
     }
 
+    function exportMenuPdf(){
+        axios.get(`http://localhost:8080/sd_assignment2/admin/${adminId}/${token}/restaurants/${restaurantId}/pdf`,{responseType: 'blob'} )
+            .then(response =>{
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'menu.pdf'); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+            })
+            .catch(err =>{
+                console.log(err);
+            })
+    }
+
     return ( 
         <div>
             Admin restaurant page {restaurantId}
@@ -93,6 +108,7 @@ function AdminRestaurantPage() {
                     ))}
                 </tbody>
             </table>
+            <button onClick={()=>{exportMenuPdf()}}>Export menu pdf</button>
         </div>
      );
 }
